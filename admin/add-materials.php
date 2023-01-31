@@ -163,32 +163,65 @@ ob_start();
                 else{
                     $image_name = ""; //default value
                 }
-                //insert into database 
+                                // //insert into database 
+                // $sql2 = "INSERT INTO tbl_materials SET 
+                //     title = '$title',
+                //     description = '$description',
+                //     price = $price,
+                //     image_name = '$image_name',
+                //     category_id = $category,
+                //     featured = '$featured',
+                //     active = '$active'
+                // ";
+
+                // //execute the query
+                // $res2 = mysqli_query($conn, $sql2);
+
+                // //check whether the data is inserted or not
+                // if($res2== TRUE){
+                //     //data inserted successfully
+                //     $_SESSION['add'] ="<div class='success'>Material Added Successfully</div>";
+                //     header('location:'.SITEURL.'admin/manage-materials.php');
+
+                // }
+                // else{
+                //     //failed to insert data
+                //     $_SESSION['add'] ="<div class='error'>Failed To Add Material</div>";
+                //     header('location:'.SITEURL.'admin/manage-materials.php');
+                // }
+
                 $sql2 = "INSERT INTO tbl_materials SET 
-                    title = '$title',
-                    description = '$description',
-                    price = $price,
-                    image_name = '$image_name',
-                    category_id = $category,
-                    featured = '$featured',
-                    active = '$active'
+                    title = ?,
+                    description = ?,
+                    price = ?,
+                    image_name = ?,
+                    category_id = ?,
+                    featured = ?,
+                    active = ?
                 ";
 
-                //execute the query
-                $res2 = mysqli_query($conn, $sql2);
+//prepare the statement
+$stmt = mysqli_prepare($conn, $sql2);
 
-                //check whether the data is inserted or not
-                if($res2== TRUE){
-                    //data inserted successfully
-                    $_SESSION['add'] ="<div class='success'>Material Added Successfully</div>";
-                    header('location:'.SITEURL.'admin/manage-materials.php');
+//bind parameters to the statement
+mysqli_stmt_bind_param($stmt, "ssdssss", $title, $description, $price, $image_name, $category, $featured, $active);
 
-                }
-                else{
-                    //failed to insert data
-                    $_SESSION['add'] ="<div class='error'>Failed To Add Material</div>";
-                    header('location:'.SITEURL.'admin/manage-materials.php');
-                }
+//execute the statement
+$res2 = mysqli_stmt_execute($stmt);
+
+//check whether the data is inserted or not
+if($res2== TRUE){
+    //data inserted successfully
+    $_SESSION['add'] ="<div class='success'>Material Added Successfully</div>";
+    header('location:'.SITEURL.'admin/manage-materials.php');
+
+}
+else{
+    //failed to insert data
+    $_SESSION['add'] ="<div class='error'>Failed To Add Material</div>";
+    header('location:'.SITEURL.'admin/manage-materials.php');
+}
+
 
                 
             }
