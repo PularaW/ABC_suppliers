@@ -56,10 +56,16 @@
         $confirm_password = md5($_POST['confirm_password']);
         //check whether the current password holder exists
 
-        $sql = "SELECT * FROM tbl_admin WHERE id =$id AND password='$current_password'";
+        $sql = "SELECT * FROM tbl_admin WHERE id =? AND password=?";
 
-        //execute the query
-        $res = mysqli_query($conn ,$sql);
+        // //execute the query
+        // $res = mysqli_query($conn ,$sql);
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "is", $id, $current_password);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $res = mysqli_stmt_execute($stmt);
+
         if($res ==TRUE){
             //check whether the data is available
             $count = mysqli_num_rows($res);
@@ -68,10 +74,17 @@
                 if($new_password == $confirm_password){
                     //update the password
                     $sql2 = "UPDATE tbl_admin SET 
-                    password='$new_password' 
-                    WHERE id = $id";
-                    //execute the query
-                    $res2 = mysqli_query($conn, $sql2);
+                    password=? 
+                    WHERE id = ?";
+                    // prepare statement
+$stmt = mysqli_prepare($conn, $sql2);
+
+// bind parameters
+mysqli_stmt_bind_param($stmt, "si", $new_password, $id);
+
+// execute statement
+$res2 = mysqli_stmt_execute($stmt);
+
                     //check the query execution
                     if($res2==TRUE){
                         $_SESSION['change-pwd'] = "<div class='success'>Password Changed Successfully</div>";
